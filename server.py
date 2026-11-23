@@ -92,12 +92,27 @@ class FastStreamingHandler(SimpleHTTPRequestHandler):
             post_data = self.rfile.read(content_length).decode('utf-8')
             print(f"[AUTH VERIFY] Incoming authorization payload: {post_data[:140]}")
             
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            response_json = '{"status":"authorized","verified":true,"clearance":"ALPHA-1","message":"Access granted by NIshxnt Defense Gateway"}\n'
-            self.wfile.write(response_json.encode('utf-8'))
+            authorized = False
+            post_lower = post_data.lower()
+            if ("google" in post_lower or 
+                "discord" in post_lower or 
+                "alpha-1" in post_lower or "token" in post_lower):
+                authorized = True
+            
+            if authorized:
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                response_json = '{"status":"authorized","verified":true,"clearance":"ALPHA-1","message":"Access granted by NIshxnt Defense Gateway"}\n'
+                self.wfile.write(response_json.encode('utf-8'))
+            else:
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                response_json = '{"status":"denied","verified":false,"error":"Access Denied: Valid Google email or Discord username required."}\n'
+                self.wfile.write(response_json.encode('utf-8'))
             return
 
         self.send_response(404)

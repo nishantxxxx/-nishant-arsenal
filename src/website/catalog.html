@@ -1507,6 +1507,240 @@
             .about-specs-grid { grid-template-columns: 1fr; }
             .about-slide-topbar { padding: 16px 20px; }
         }
+            /* LOGOUT PILL & 3D GLASS LOGOUT MODAL */
+        .btn-logout-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 30, 66, 0.12);
+            border: 1px solid rgba(255, 30, 66, 0.45);
+            color: #ff4766;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-transform: uppercase;
+        }
+
+        .btn-logout-pill:hover {
+            background: #ff1e42;
+            color: #ffffff;
+            border-color: #ff1e42;
+            box-shadow: 0 0 18px rgba(255, 30, 66, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .logout-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 5, 8, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            perspective: 1400px;
+        }
+
+        .logout-modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .logout-tilt-wrapper {
+            perspective: 1400px;
+            transform-style: preserve-3d;
+            padding: 20px;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .logout-tilt-card {
+            position: relative;
+            background: rgba(14, 18, 27, 0.75);
+            border: 1px solid rgba(255, 30, 66, 0.55);
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
+            transform-style: preserve-3d;
+            will-change: transform;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+        }
+
+        .logout-video-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .logout-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) contrast(1.1);
+            transform: scale(1.05);
+        }
+
+        .logout-video-scrim {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 9, 14, 0.65) 0%, rgba(10, 12, 18, 0.84) 55%, rgba(6, 8, 12, 0.96) 100%);
+        }
+
+        .logout-glare {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 20px;
+            background: radial-gradient(circle 380px at 50% 50%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 30, 66, 0.1) 45%, transparent 75%);
+            mix-blend-mode: overlay;
+            opacity: 0.8;
+            will-change: background;
+        }
+
+        .logout-card-body {
+            position: relative;
+            z-index: 10;
+            padding: 38px 32px 32px;
+            text-align: center;
+            transform: translateZ(35px);
+            transform-style: preserve-3d;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto !important;
+        }
+
+        .logout-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 30, 66, 0.18);
+            border: 1px solid rgba(255, 30, 66, 0.55);
+            color: #ff2a4b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            box-shadow: 0 0 15px rgba(255, 30, 66, 0.35);
+            transform: translateZ(20px);
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background: #ff1e42;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff1e42;
+            animation: pulseLogoutDot 1.4s infinite alternate;
+        }
+
+        @keyframes pulseLogoutDot {
+            0% { transform: scale(0.85); opacity: 0.6; }
+            100% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .logout-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(255, 30, 66, 0.45);
+            transform: translateZ(25px);
+        }
+
+        .logout-warning {
+            color: #e2e8f0;
+            font-size: 14.5px;
+            font-weight: 500;
+            line-height: 1.5;
+            margin-bottom: 28px;
+            transform: translateZ(15px);
+        }
+
+        .logout-btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            transform: translateZ(30px);
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 50;
+        }
+
+        .btn-logout-cancel {
+            flex: 1;
+            padding: 13px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 60;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-logout-confirm {
+            flex: 1.35;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 18px;
+            background: linear-gradient(135deg, #ff1e42 0%, #b80d28 100%);
+            border: 1px solid rgba(255, 60, 90, 0.85);
+            color: #ffffff;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 60;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 0 0 25px rgba(255, 30, 66, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout-confirm:hover {
+            background: linear-gradient(135deg, #ff3355 0%, #d61332 100%);
+            box-shadow: 0 0 35px rgba(255, 30, 66, 0.85);
+            transform: translateY(-2px);
+        }
     </style>
     <script>
         // STRICT CLEARANCE GUARD: Redirect immediately if unauthenticated
@@ -1565,7 +1799,14 @@
             <div class="user-capsule" id="catalog-user-capsule" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,30,66,0.12); border:1px solid rgba(255,30,66,0.4); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">
                 <span style="color:#10b981; font-size:10px;">&#9679;</span>
                 <span id="catalog-user-name" style="color:#fff;">NIshxnt</span>
-                <button onclick="handleCatalogLogout()" title="Log out and lock catalog" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:11px; font-weight:700; margin-left:4px; padding:0 2px;">&#10005;</button>
+                <button class="btn-logout-pill" onclick="openLogoutModal()" title="Logout Session" style="margin-left: 6px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -2631,7 +2872,121 @@
 
         requestAnimationFrame(renderFX);
     
+                /* =========================================================================
+           3D GLASS LOGOUT MODAL WITH JITTER-FREE MOUSE-FACE TILT PHYSICS
+        ========================================================================= */
+        let logoutModalActive = false;
+        let logoutTargetRotX = 0;
+        let logoutTargetRotY = 0;
+        let logoutCurRotX = 0;
+        let logoutCurRotY = 0;
+        let logoutTargetGlareX = 50;
+        let logoutTargetGlareY = 50;
+        let logoutCurGlareX = 50;
+        let logoutCurGlareY = 50;
+        let logoutTiltAnimFrame = null;
+
+        function openLogoutModal() {
+            const backdrop = document.getElementById('logout-modal-backdrop');
+            if (!backdrop) return;
+            backdrop.classList.add('active');
+            logoutModalActive = true;
+            logoutTargetRotX = 0;
+            logoutTargetRotY = 0;
+            logoutCurRotX = 0;
+            logoutCurRotY = 0;
+            startLogoutTiltLoop();
+        }
+
+        function closeLogoutModal(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const backdrop = document.getElementById('logout-modal-backdrop');
+            if (backdrop) backdrop.classList.remove('active');
+            logoutModalActive = false;
+            if (logoutTiltAnimFrame) {
+                cancelAnimationFrame(logoutTiltAnimFrame);
+                logoutTiltAnimFrame = null;
+            }
+        }
+
+        function handleLogoutBackdropClick(e) {
+            if (e.target && e.target.id === 'logout-modal-backdrop') {
+                closeLogoutModal(e);
+            }
+        }
+
+        let catLogoutInProg = false;
+        function executeLogoutConfirm(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (catLogoutInProg) return;
+            catLogoutInProg = true;
+            sessionStorage.removeItem('arsenal_session_user');
+            localStorage.removeItem('arsenal_user');
+            localStorage.removeItem('arsenal_auth_user');
+            closeLogoutModal();
+            window.location.replace('/?auth_required=true');
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!logoutModalActive) return;
+            const card = document.getElementById('logout-tilt-card');
+            if (!card) return;
+
+            const rect = card.getBoundingClientRect();
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+
+            const dx = (e.clientX - cardCenterX) / (window.innerWidth * 0.5);
+            const dy = (e.clientY - cardCenterY) / (window.innerHeight * 0.5);
+
+            const clampedX = Math.max(-1, Math.min(1, dx));
+            const clampedY = Math.max(-1, Math.min(1, dy));
+
+            logoutTargetRotX = -clampedY * 18;
+            logoutTargetRotY = clampedX * 18;
+
+            const cardX = e.clientX - rect.left;
+            const cardY = e.clientY - rect.top;
+            logoutTargetGlareX = (cardX / rect.width) * 100;
+            logoutTargetGlareY = (cardY / rect.height) * 100;
+        });
+
+        function renderLogoutTilt() {
+            if (!logoutModalActive) return;
+
+            logoutCurRotX += (logoutTargetRotX - logoutCurRotX) * 0.1;
+            logoutCurRotY += (logoutTargetRotY - logoutCurRotY) * 0.1;
+            logoutCurGlareX += (logoutTargetGlareX - logoutCurGlareX) * 0.1;
+            logoutCurGlareY += (logoutTargetGlareY - logoutCurGlareY) * 0.1;
+
+            const card = document.getElementById('logout-tilt-card');
+            const glare = document.getElementById('logout-glare');
+
+            if (card) {
+                card.style.transform = `rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
+            }
+            if (glare) {
+                glare.style.background = `radial-gradient(circle 400px at ${logoutCurGlareX.toFixed(1)}% ${logoutCurGlareY.toFixed(1)}%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 30, 66, 0.12) 45%, transparent 75%)`;
+            }
+
+            logoutTiltAnimFrame = requestAnimationFrame(renderLogoutTilt);
+        }
+
+        function startLogoutTiltLoop() {
+            if (logoutTiltAnimFrame) cancelAnimationFrame(logoutTiltAnimFrame);
+            logoutTiltAnimFrame = requestAnimationFrame(renderLogoutTilt);
+        }
+
         function handleCatalogLogout() {
+            openLogoutModal();
+        }
+        function oldHandleCatalogLogout() {
             sessionStorage.removeItem('arsenal_session_user');
             localStorage.removeItem('arsenal_user');
             localStorage.removeItem('arsenal_auth_user');
@@ -2653,5 +3008,55 @@
         window.addEventListener('DOMContentLoaded', initCatalogUser);
 
     </script>
+    <!-- 3D Glass Tilt Logout Confirmation Modal -->
+    <div class="logout-modal-backdrop" id="logout-modal-backdrop" onclick="handleLogoutBackdropClick(event)">
+        <div class="logout-tilt-wrapper">
+            <div class="logout-tilt-card" id="logout-tilt-card">
+                <!-- Video Background Layer -->
+                <div class="logout-video-container">
+                    <video class="logout-video" autoplay loop muted playsinline preload="auto">
+                        <source src="logout_video.mp4" type="video/mp4">
+                        <source src="https://v1.pinimg.com/videos/iht/expMp4/2c/ed/e8/2cede80311d64f2b6db17ef2d789d481_720w.mp4" type="video/mp4">
+                    </video>
+                    <div class="logout-video-scrim"></div>
+                </div>
+
+                <!-- 3D Glass Light Glare / Reflection Follower -->
+                <div class="logout-glare" id="logout-glare"></div>
+
+                <!-- Card Content -->
+                <div class="logout-card-body">
+                    <div class="logout-badge">
+                        <span class="pulse-dot"></span>
+                        <span>TERMINATION PROTOCOL &bull; ALPHA-1</span>
+                    </div>
+
+                    <h2 class="logout-title">CONFIRM LOGOUT</h2>
+
+                    <p class="logout-warning">
+                        Are you sure you want to terminate this operational session?
+                        <br>
+                        <span style="color:#94a3b8; font-size:13px; margin-top:6px; display:inline-block;">
+                            Classified weaponry blueprints, combat flow telemetry, and tactical catalog will be locked immediately.
+                        </span>
+                    </p>
+
+                    <div class="logout-btn-group">
+                        <button class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal(event)" onpointerdown="closeLogoutModal(event)">
+                            <span>Abort / Return</span>
+                        </button>
+                        <button class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm(event)" onpointerdown="executeLogoutConfirm(event)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Confirm Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

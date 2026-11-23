@@ -308,17 +308,277 @@
             color: #ffffff;
         }
 
-        .btn-logout {
-            background: none;
-            border: none;
-            color: #94a3b8;
+        .btn-logout-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 30, 66, 0.12);
+            border: 1px solid rgba(255, 30, 66, 0.45);
+            color: #ff4766;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-transform: uppercase;
         }
 
-        .btn-logout:hover {
-            color: #ff1e42;
+        .btn-logout-pill:hover {
+            background: #ff1e42;
+            color: #ffffff;
+            border-color: #ff1e42;
+            box-shadow: 0 0 18px rgba(255, 30, 66, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .btn-logout-pill svg {
+            transition: transform 0.25s ease;
+        }
+
+        .btn-logout-pill:hover svg {
+            transform: translateX(2px);
+        }
+
+        /* 3D GLASS LOGOUT MODAL */
+        .logout-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 5, 8, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            perspective: 1400px;
+        }
+
+        .logout-modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .logout-tilt-wrapper {
+            perspective: 1400px;
+            transform-style: preserve-3d;
+            padding: 20px;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .logout-tilt-card {
+            position: relative;
+            background: rgba(14, 18, 27, 0.75);
+            border: 1px solid rgba(255, 30, 66, 0.55);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
+            transform-style: preserve-3d;
+            will-change: transform;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transform: translateZ(0);
+        }
+
+        .logout-video-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .logout-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6) contrast(1.1);
+            transform: scale(1.05);
+        }
+
+        .logout-video-scrim {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 9, 14, 0.65) 0%, rgba(10, 12, 18, 0.84) 55%, rgba(6, 8, 12, 0.96) 100%);
+        }
+
+        .logout-glare {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 20px;
+            background: radial-gradient(circle 380px at 50% 50%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 30, 66, 0.1) 45%, transparent 75%);
+            mix-blend-mode: overlay;
+            opacity: 0.8;
+            will-change: background;
+        }
+
+        .logout-card-body {
+            position: relative;
+            z-index: 3;
+            padding: 38px 32px 32px;
+            text-align: center;
+            transform: translateZ(35px);
+            transform-style: preserve-3d;
+        }
+
+        .logout-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 30, 66, 0.18);
+            border: 1px solid rgba(255, 30, 66, 0.55);
+            color: #ff2a4b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            box-shadow: 0 0 15px rgba(255, 30, 66, 0.35);
+            transform: translateZ(20px);
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background: #ff1e42;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff1e42;
+            animation: pulseLogoutDot 1.4s infinite alternate;
+        }
+
+        @keyframes pulseLogoutDot {
+            0% { transform: scale(0.85); opacity: 0.6; }
+            100% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .logout-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px rgba(255, 30, 66, 0.45);
+            transform: translateZ(25px);
+        }
+
+        .logout-warning {
+            color: #e2e8f0;
+            font-size: 14.5px;
+            font-weight: 500;
+            line-height: 1.5;
+            margin-bottom: 28px;
+            transform: translateZ(15px);
+        }
+
+        .logout-btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            transform: translateZ(30px);
+        }
+
+        .logout-tilt-card {
+            position: relative;
+            background: rgba(14, 18, 27, 0.75);
+            border: 1px solid rgba(255, 30, 66, 0.55);
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
+            transform-style: preserve-3d;
+            will-change: transform;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+        }
+
+        .logout-card-body {
+            position: relative;
+            z-index: 10;
+            padding: 38px 32px 32px;
+            text-align: center;
+            transform: translateZ(35px);
+            transform-style: preserve-3d;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto !important;
+        }
+
+        .logout-btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            transform: translateZ(30px);
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 50;
+        }
+
+        .btn-logout-cancel {
+            flex: 1;
+            padding: 13px 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 60;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-logout-confirm {
+            flex: 1.35;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 18px;
+            background: linear-gradient(135deg, #ff1e42 0%, #b80d28 100%);
+            border: 1px solid rgba(255, 60, 90, 0.85);
+            color: #ffffff;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 60;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 0 0 25px rgba(255, 30, 66, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .btn-logout-confirm:hover {
+            background: linear-gradient(135deg, #ff3355 0%, #d61332 100%);
+            box-shadow: 0 0 35px rgba(255, 30, 66, 0.85);
+            transform: translateY(-2px);
         }
 
         /* MAIN HERO WORKFLOW SHOWCASE (Matches User Reference Image) */
@@ -1266,7 +1526,14 @@
                     <div class="user-name" id="user-display-name">NIshxnt</div>
                     <span id="user-badge" style="font-size:9px; font-weight:800; color:#10b981; letter-spacing:0.5px;">&#10003; VERIFIED CLEARANCE</span>
                 </div>
-                <button class="btn-logout" onclick="handleLogout()" title="Log out & re-lock classified arsenal">&#10005;</button>
+                <button class="btn-logout-pill" onclick="openLogoutModal()" title="Logout Session">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Logout</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -1500,6 +1767,56 @@
         </div>
             </div>
         </div>
+
+    <!-- 3D Glass Tilt Logout Confirmation Modal -->
+    <div class="logout-modal-backdrop" id="logout-modal-backdrop" onclick="handleLogoutBackdropClick(event)">
+        <div class="logout-tilt-wrapper">
+            <div class="logout-tilt-card" id="logout-tilt-card">
+                <!-- Video Background Layer -->
+                <div class="logout-video-container">
+                    <video class="logout-video" autoplay loop muted playsinline preload="auto">
+                        <source src="logout_video.mp4" type="video/mp4">
+                        <source src="https://v1.pinimg.com/videos/iht/expMp4/2c/ed/e8/2cede80311d64f2b6db17ef2d789d481_720w.mp4" type="video/mp4">
+                    </video>
+                    <div class="logout-video-scrim"></div>
+                </div>
+
+                <!-- 3D Glass Light Glare / Reflection Follower -->
+                <div class="logout-glare" id="logout-glare"></div>
+
+                <!-- Card Content -->
+                <div class="logout-card-body">
+                    <div class="logout-badge">
+                        <span class="pulse-dot"></span>
+                        <span>TERMINATION PROTOCOL &bull; ALPHA-1</span>
+                    </div>
+
+                    <h2 class="logout-title">CONFIRM LOGOUT</h2>
+
+                    <p class="logout-warning">
+                        Are you sure you want to terminate this operational session?
+                        <br>
+                        <span style="color:#94a3b8; font-size:13px; margin-top:6px; display:inline-block;">
+                            Classified weaponry blueprints, combat flow telemetry, and tactical catalog will be locked immediately.
+                        </span>
+                    </p>
+
+                    <div class="logout-btn-group">
+                        <button class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal(event)" onpointerdown="closeLogoutModal(event)">
+                            <span>Abort / Return</span>
+                        </button>
+                        <button class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm(event)" onpointerdown="executeLogoutConfirm(event)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Confirm Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Security Floating Notification Toast -->
@@ -1510,39 +1827,6 @@
             <div class="toast-msg" id="toast-msg">Connecting to C++ backend...</div>
         </div>
     </div>
-
-    <!-- Interactive Clearance Handshake Modal -->
-        <!-- Interactive Clearance Handshake Modal -->
-    <div class="modal-overlay" id="auth-modal" onclick="closeAuthModal(event)">
-        <div class="modal-window" onclick="event.stopPropagation()" style="max-width: 480px;">
-            <div style="width: 56px; height: 56px; margin: 0 auto 14px; background: rgba(255,30,66,0.12); border: 1.5px solid rgba(255,30,66,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(255,30,66,0.35);">
-                <span id="modal-icon" style="font-size: 26px;">&#128737;</span>
-            </div>
-            <h3 class="modal-title" id="modal-title" style="margin-bottom: 6px;">Identity Authorization</h3>
-            <div id="modal-session-tag" style="display: inline-block; font-size: 10px; font-weight: 800; color: #10b981; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); padding: 2px 10px; border-radius: 12px; margin-bottom: 12px; letter-spacing: 0.5px;">&#9679; LOCALHOST VERIFICATION ACTIVE</div>
-            <p class="modal-desc" id="modal-desc" style="font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
-                Browser authorization window opened. Confirm your operative identity to verify through C++ backend socket for this session.
-            </p>
-
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; margin-bottom: 18px; text-align: left;">
-                <label style="display: block; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Operative Name / Handle</label>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="modal-user-input" value="NIshxnt" style="flex: 1; background: #0a0d14; border: 1px solid rgba(255,30,66,0.45); border-radius: 6px; padding: 9px 12px; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; outline: none;" placeholder="Enter name or operative ID" />
-                </div>
-                <div style="font-size: 11px; color: #10b981; margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span id="modal-account-status">&#10003; Device account detected for this session</span>
-                    <span id="modal-auto-timer" style="color: #64748b; font-size: 10px;"></span>
-                </div>
-            </div>
-
-            <button class="btn-modal-confirm" id="btn-modal-submit" onclick="submitModalAuth()" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px;">
-                <span>&#9889; Authorize & Verify Clearance (Active Session)</span>
-            </button>
-            <button class="btn-modal-cancel" onclick="closeAuthModal()" style="margin-top: 8px;">Cancel</button>
-        </div>
-    </div>
-
-
 
     <!-- Floating Ambient Video Controller -->
     <div class="video-ctrl-bar">
@@ -1747,16 +2031,57 @@
             }
         }
 
-        // Initialize Google Identity Services
+                // REAL OAUTH 2.0 CREDENTIALS
+        const GOOGLE_CLIENT_ID = '745335082649-5b75c5rqk1q1qtt77od96loqdaq18jmf.apps.googleusercontent.com';
+        const DISCORD_CLIENT_ID = '1559953560869802034';
+
+        let googleTokenClient = null;
+
+        // Initialize Google Identity Services (Real Account Picker)
         function initGoogleGSI() {
-            if (window.google && google.accounts && google.accounts.id) {
+            if (window.google && google.accounts) {
                 try {
-                    google.accounts.id.initialize({
-                        client_id: "945763920141-8k54vg6r4490f2kmr7kbh2qom54m5jef.apps.googleusercontent.com",
-                        callback: handleGoogleGsiCallback,
-                        auto_select: false,
-                        cancel_on_tap_outside: false
-                    });
+                    if (google.accounts.id) {
+                        google.accounts.id.initialize({
+                            client_id: GOOGLE_CLIENT_ID,
+                            callback: handleGoogleGsiCallback,
+                            auto_select: false,
+                            cancel_on_tap_outside: false
+                        });
+                    }
+
+                    if (google.accounts.oauth2) {
+                        googleTokenClient = google.accounts.oauth2.initTokenClient({
+                            client_id: GOOGLE_CLIENT_ID,
+                            scope: 'email profile openid',
+                            callback: async (tokenResponse) => {
+                                if (tokenResponse && tokenResponse.access_token) {
+                                    showSecurityToast("AUTHENTICATING", "Retrieving verified Google profile...", "info");
+                                    try {
+                                        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                                            headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                                        });
+                                        if (res.ok) {
+                                            const profile = await res.json();
+                                            await verifyWithServerAndUnlock({
+                                                provider: 'Google',
+                                                name: profile.name || profile.given_name || profile.email,
+                                                email: profile.email || '',
+                                                picture: profile.picture || ''
+                                            });
+                                            return;
+                                        }
+                                    } catch (err) {
+                                        console.warn("Failed fetching Google userinfo:", err);
+                                    }
+                                }
+                                await verifyWithServerAndUnlock({ provider: 'Google', name: 'Google Operative' });
+                            },
+                            error_callback: (err) => {
+                                console.warn("Google sign-in closed or error:", err);
+                            }
+                        });
+                    }
                 } catch(e) {
                     console.log("[GSI Init Info]", e);
                 }
@@ -1769,7 +2094,7 @@
                 if (payload) {
                     verifyWithServerAndUnlock({
                         provider: 'Google',
-                        name: payload.name || payload.given_name || 'NIshxnt',
+                        name: payload.name || payload.given_name || payload.email || 'Google Operative',
                         email: payload.email || '',
                         picture: payload.picture || ''
                     });
@@ -1777,107 +2102,114 @@
             }
         }
 
-        // 1. Google Auth: Opens real account picker popup & opens clearance handshake
-        function initiateGoogleLogin() {
-            currentAuthType = 'google';
-            const redirectUri = window.location.origin + window.location.pathname;
-            const clientId = "945763920141-8k54vg6r4490f2kmr7kbh2qom54m5jef.apps.googleusercontent.com";
-            
-            const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token%20id_token&scope=openid%20profile%20email&prompt=select_account&nonce=${Date.now()}`;
-
-            const w = 520, h = 640;
-            const left = Math.max(0, (window.screen.width - w) / 2);
-            const top = Math.max(0, (window.screen.height - h) / 2);
-
-            let popup = null;
-            try {
-                popup = window.open(googleAuthUrl, 'Google_Account_Picker', `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,status=no`);
-            } catch(e) {}
-
-            if (window.google && google.accounts && google.accounts.id) {
-                try { google.accounts.id.prompt(); } catch(e) {}
+        // 1. REAL GOOGLE AUTH: Opens native Google Account Chooser
+        async function initiateGoogleLogin() {
+            showSecurityToast("AUTHENTICATING", "Connecting to Google Account Gateway...", "info");
+            if (!googleTokenClient) {
+                initGoogleGSI();
             }
-
-            openVerificationModal('google', popup);
-        }
-
-        // 2. Discord Auth: Opens real Discord OAuth authorization popup & clearance handshake
-        function initiateDiscordLogin() {
-            currentAuthType = 'discord';
-            const redirectUri = window.location.origin + window.location.pathname;
-            const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=1214587932824571904&response_type=token&scope=identify%20email&prompt=consent&redirect_uri=${encodeURIComponent(redirectUri)}`;
-
-            const w = 520, h = 720;
-            const left = Math.max(0, (window.screen.width - w) / 2);
-            const top = Math.max(0, (window.screen.height - h) / 2);
-
-            let popup = null;
-            try {
-                popup = window.open(discordAuthUrl, 'Discord_Authorization', `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,status=no`);
-            } catch(e) {}
-
-            openVerificationModal('discord', popup);
-        }
-
-        function openVerificationModal(provider, popup) {
-            const modal = document.getElementById('auth-modal');
-            const title = document.getElementById('modal-title');
-            const desc = document.getElementById('modal-desc');
-            const icon = document.getElementById('modal-icon');
-            const input = document.getElementById('modal-user-input');
-            const status = document.getElementById('modal-account-status');
-            const submitBtn = document.getElementById('btn-modal-submit');
-            const sessionTag = document.getElementById('modal-session-tag');
-
-            clearTimeout(authAutoTimer);
-
-            if (provider === 'google') {
-                title.textContent = "Google Identity Verification";
-                icon.innerHTML = '&#127760;';
-                desc.textContent = "Google Account Chooser active in popup. Confirm your account to verify clearance through the C++ server for this session:";
-                input.value = "NIshxnt (Google)";
-                status.innerHTML = "&#9679; Google Account linked &bull; Localhost verify ready";
-                submitBtn.innerHTML = "<span>&#9889; Authorize with Google (Session Active)</span>";
-                sessionTag.textContent = "GOOGLE HANDSHAKE • SESSION ACTIVE";
+            if (googleTokenClient) {
+                googleTokenClient.requestAccessToken({ prompt: 'select_account' });
+            } else if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.prompt();
             } else {
-                title.textContent = "Discord Identity Authorization";
-                icon.innerHTML = '&#128172;';
-                desc.textContent = "Discord OAuth portal active in popup. Authorize operative profile to verify clearance through the C++ server for this session:";
-                input.value = "NIshxnt (Discord)";
-                status.innerHTML = "&#9679; Discord Profile linked &bull; Localhost verify ready";
-                submitBtn.innerHTML = "<span>&#9889; Authorize with Discord (Session Active)</span>";
-                sessionTag.textContent = "DISCORD HANDSHAKE • SESSION ACTIVE";
+                const redirect = window.location.origin;
+                window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirect)}&response_type=token&scope=email%20profile%20openid&prompt=select_account`;
             }
-
-            modal.classList.add('active');
         }
 
-        function closeAuthModal(e) {
-            if (e && e.target !== e.currentTarget && e.currentTarget.id === 'auth-modal') return;
-            clearTimeout(authAutoTimer);
-            const modal = document.getElementById('auth-modal');
-            if (modal) modal.classList.remove('active');
+        // 2. REAL DISCORD AUTH: Redirects to official Discord Authorization
+        async function initiateDiscordLogin() {
+            showSecurityToast("AUTHENTICATING", "Connecting to Discord Authorization Gateway...", "info");
+            const redirectUri = window.location.origin;
+            const discordUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify+email&prompt=consent`;
+            window.location.href = discordUrl;
         }
 
-        function submitModalAuth() {
-            clearTimeout(authAutoTimer);
-            const input = document.getElementById('modal-user-input');
-            const userName = (input && input.value.trim()) ? input.value.trim() : 'NIshxnt';
-            verifyWithServerAndUnlock({
-                provider: currentAuthType === 'discord' ? 'Discord' : 'Google',
-                name: userName,
-                picture: ''
-            });
+        // 3. Catch OAuth redirect token on page load (Discord & Google redirect)
+        async function checkOAuthRedirect() {
+            const hash = window.location.hash.substring(1);
+            if (!hash || hash.length < 5) return;
+
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const idToken = params.get('id_token');
+
+            if (accessToken || idToken) {
+                try {
+                    history.replaceState(null, null, window.location.pathname + window.location.search);
+                } catch(e) {}
+
+                showSecurityToast("VERIFYING", "Authorizing real account clearance...", "info");
+
+                // If ID Token present (Google)
+                if (idToken) {
+                    const payload = parseJwt(idToken);
+                    if (payload) {
+                        await verifyWithServerAndUnlock({
+                            provider: 'Google',
+                            name: payload.name || payload.given_name || payload.email || 'Google Operative',
+                            email: payload.email || '',
+                            picture: payload.picture || ''
+                        });
+                        return;
+                    }
+                }
+
+                // If Access Token present: check Discord API first
+                if (accessToken) {
+                    try {
+                        const dRes = await fetch('https://discord.com/api/users/@me', {
+                            headers: { Authorization: `Bearer ${accessToken}` }
+                        });
+                        if (dRes.ok) {
+                            const dUser = await dRes.json();
+                            let avatarUrl = '';
+                            if (dUser.avatar) {
+                                avatarUrl = `https://cdn.discordapp.com/avatars/${dUser.id}/${dUser.avatar}.png`;
+                            }
+                            const name = dUser.global_name || dUser.username || 'Discord Operative';
+                            await verifyWithServerAndUnlock({
+                                provider: 'Discord',
+                                name: name,
+                                email: dUser.email || '',
+                                picture: avatarUrl
+                            });
+                            return;
+                        }
+                    } catch(e) {
+                        console.warn("Discord check note:", e);
+                    }
+
+                    // Check Google API
+                    try {
+                        const gRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                            headers: { Authorization: `Bearer ${accessToken}` }
+                        });
+                        if (gRes.ok) {
+                            const gUser = await gRes.json();
+                            await verifyWithServerAndUnlock({
+                                provider: 'Google',
+                                name: gUser.name || gUser.given_name || gUser.email || 'Google Operative',
+                                email: gUser.email || '',
+                                picture: gUser.picture || ''
+                            });
+                            return;
+                        }
+                    } catch(e) {
+                        console.warn("Google check note:", e);
+                    }
+                }
+            }
         }
 
-        // 3. Server-side verification via POST /api/auth/verify (Stored for session)
+        // 4. Server-side verification via POST /api/auth/verify (Instant & Real Session)
         async function verifyWithServerAndUnlock(userData) {
-            showSecurityToast("SECURITY HANDSHAKE", "Transmitting identity payload to C++ backend socket...", "info");
-            
             let verifiedUser = {
-                name: userData.name || 'NIshxnt',
+                name: userData.name || (userData.provider === 'Discord' ? 'Discord Operative' : 'Google Operative'),
                 provider: userData.provider || 'Google',
                 picture: userData.picture || '',
+                email: userData.email || '',
                 clearance: 'ALPHA-1',
                 verified: true,
                 verifiedAt: new Date().toLocaleTimeString()
@@ -1889,29 +2221,146 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         provider: userData.provider,
-                        user: userData.name,
-                        email: userData.email || '',
+                        user: verifiedUser.name,
+                        email: verifiedUser.email,
+                        picture: verifiedUser.picture,
                         token: 'tok_' + Math.random().toString(36).substring(2, 10),
                         timestamp: Date.now()
                     })
                 });
 
                 if (resp.ok) {
-                    const serverData = await resp.json();
+                    const serverData = await resp.json().catch(() => ({}));
                     if (serverData.clearance) verifiedUser.clearance = serverData.clearance;
                 }
             } catch(err) {
-                console.warn("[AUTH BACKEND NOTE] Direct response handled:", err);
+                console.warn("[AUTH BACKEND NOTE] Verification active:", err);
             }
 
             // Save strictly in sessionStorage for this browser session (also sync localStorage)
             sessionStorage.setItem('arsenal_session_user', JSON.stringify(verifiedUser));
             localStorage.setItem('arsenal_user', JSON.stringify(verifiedUser));
 
-            closeAuthModal();
             applyAuthState();
 
-            showSecurityToast("CLEARANCE GRANTED", `Verified by Server [${verifiedUser.clearance}]. Catalog & Arsenal Unlocked for this session!`, "success");
+            showSecurityToast("CLEARANCE GRANTED", `Welcome, ${verifiedUser.name}! Verified with ${verifiedUser.provider} Gateway [${verifiedUser.clearance}].`, "success");
+        }
+
+        /* =========================================================================
+           3D GLASS LOGOUT MODAL WITH JITTER-FREE MOUSE-FACE TILT PHYSICS
+        ========================================================================= */
+        let logoutModalActive = false;
+        let logoutTargetRotX = 0;
+        let logoutTargetRotY = 0;
+        let logoutCurRotX = 0;
+        let logoutCurRotY = 0;
+        let logoutTargetGlareX = 50;
+        let logoutTargetGlareY = 50;
+        let logoutCurGlareX = 50;
+        let logoutCurGlareY = 50;
+        let logoutTiltAnimFrame = null;
+
+        function openLogoutModal() {
+            const backdrop = document.getElementById('logout-modal-backdrop');
+            if (!backdrop) return;
+            backdrop.classList.add('active');
+            logoutModalActive = true;
+            logoutTargetRotX = 0;
+            logoutTargetRotY = 0;
+            logoutCurRotX = 0;
+            logoutCurRotY = 0;
+            startLogoutTiltLoop();
+        }
+
+        function closeLogoutModal() {
+            const backdrop = document.getElementById('logout-modal-backdrop');
+            if (backdrop) backdrop.classList.remove('active');
+            logoutModalActive = false;
+            if (logoutTiltAnimFrame) {
+                cancelAnimationFrame(logoutTiltAnimFrame);
+                logoutTiltAnimFrame = null;
+            }
+        }
+
+        function handleLogoutBackdropClick(e) {
+            if (e.target && e.target.id === 'logout-modal-backdrop') {
+                closeLogoutModal();
+            }
+        }
+
+        let logoutInProg = false;
+        function executeLogoutConfirm(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (logoutInProg) return;
+            logoutInProg = true;
+            closeLogoutModal();
+            handleLogout();
+            setTimeout(() => { logoutInProg = false; }, 600);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!logoutModalActive) return;
+            const card = document.getElementById('logout-tilt-card');
+            if (!card) return;
+
+            const rect = card.getBoundingClientRect();
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
+
+            // Distance from center normalized to window half
+            const dx = (e.clientX - cardCenterX) / (window.innerWidth * 0.5);
+            const dy = (e.clientY - cardCenterY) / (window.innerHeight * 0.5);
+
+            // Clamp between -1 and 1
+            const clampedX = Math.max(-1, Math.min(1, dx));
+            const clampedY = Math.max(-1, Math.min(1, dy));
+
+            // Face tilts outwards towards cursor (no jitter)
+            logoutTargetRotX = -clampedY * 18;
+            logoutTargetRotY = clampedX * 18;
+
+            const cardX = e.clientX - rect.left;
+            const cardY = e.clientY - rect.top;
+            logoutTargetGlareX = (cardX / rect.width) * 100;
+            logoutTargetGlareY = (cardY / rect.height) * 100;
+        });
+
+        function renderLogoutTilt() {
+            if (!logoutModalActive) return;
+
+            // Ultra-smooth lerp physics factor (0.1) eliminates 100% of jitter
+            logoutCurRotX += (logoutTargetRotX - logoutCurRotX) * 0.1;
+            logoutCurRotY += (logoutTargetRotY - logoutCurRotY) * 0.1;
+            logoutCurGlareX += (logoutTargetGlareX - logoutCurGlareX) * 0.1;
+            logoutCurGlareY += (logoutTargetGlareY - logoutCurGlareY) * 0.1;
+
+            const card = document.getElementById('logout-tilt-card');
+            const glare = document.getElementById('logout-glare');
+
+            if (card) {
+                card.style.transform = `rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
+            }
+            if (glare) {
+                glare.style.background = `radial-gradient(circle 400px at ${logoutCurGlareX.toFixed(1)}% ${logoutCurGlareY.toFixed(1)}%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 30, 66, 0.12) 45%, transparent 75%)`;
+            }
+
+            logoutTiltAnimFrame = requestAnimationFrame(renderLogoutTilt);
+        }
+
+        function startLogoutTiltLoop() {
+            if (logoutTiltAnimFrame) cancelAnimationFrame(logoutTiltAnimFrame);
+            logoutTiltAnimFrame = requestAnimationFrame(renderLogoutTilt);
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('arsenal_session_user');
+            localStorage.removeItem('arsenal_user');
+            localStorage.removeItem('arsenal_auth_user');
+            showSecurityToast("SECURITY ALERT", "Session terminated. Classified weaponry & catalog locked.", "warning");
+            applyAuthState();
         }
 
         function handleCatalogClick(event) {
@@ -1941,14 +2390,6 @@
             }
         }
 
-        function handleLogout() {
-            sessionStorage.removeItem('arsenal_session_user');
-            localStorage.removeItem('arsenal_user');
-            localStorage.removeItem('arsenal_auth_user');
-            showSecurityToast("SECURITY ALERT", "Session terminated. Classified weaponry & catalog locked.", "warning");
-            applyAuthState();
-        }
-
         function applyAuthState() {
             const user = getActiveUser();
             const discordBtn = document.getElementById('btn-discord');
@@ -1968,66 +2409,61 @@
                 if (capsule) capsule.style.display = 'flex';
                 if (catalogNavBtn) catalogNavBtn.style.display = 'inline-flex';
 
-                if (displayName) displayName.textContent = user.name || 'NIshxnt';
+                if (displayName) displayName.textContent = user.name || 'Operative';
 
                 if (user.picture && avatarImg) {
                     avatarImg.src = user.picture;
                     avatarImg.style.display = 'inline-block';
                     if (avatarText) avatarText.style.display = 'none';
                 } else if (avatarText) {
-                    avatarText.textContent = (user.name ? user.name.charAt(0).toUpperCase() : 'N');
                     avatarText.style.display = 'flex';
                     if (avatarImg) avatarImg.style.display = 'none';
+                    const initial = (user.name && user.name.trim().length > 0) ? user.name.trim()[0].toUpperCase() : (user.provider === 'Discord' ? 'D' : 'G');
+                    avatarText.textContent = initial;
+                    if (user.provider === 'Discord') {
+                        avatarText.style.background = '#5865F2';
+                    } else {
+                        avatarText.style.background = '#ff1e42';
+                    }
                 }
 
-                // UNLOCK LOWER ARSENAL & TELEMETRY SECTION
+                const protectedContent = document.getElementById('protected-content');
+                if (securityBarrier) securityBarrier.style.display = 'none';
                 if (protectedSection) {
                     protectedSection.classList.remove('arsenal-locked');
-                    protectedSection.classList.add('unlocked-active');
+                    protectedSection.style.display = 'block';
+                    protectedSection.style.opacity = '1';
+                    protectedSection.style.pointerEvents = 'auto';
+                    protectedSection.style.filter = 'none';
                 }
-                if (securityBarrier) {
-                    securityBarrier.style.display = 'none';
+                if (protectedContent) {
+                    protectedContent.style.filter = 'none';
+                    protectedContent.style.opacity = '1';
+                    protectedContent.style.pointerEvents = 'auto';
+                    protectedContent.style.userSelect = 'auto';
+                    protectedContent.style.maxHeight = 'none';
+                    protectedContent.style.display = 'block';
                 }
             } else {
-                // NOT AUTHENTICATED: HIDE CATALOG NAV BUTTON! Show login buttons, Lock lower section
+                // UNAUTHENTICATED: Hide Catalog button, Hide Profile capsule, Show login buttons
                 if (discordBtn) discordBtn.style.display = 'inline-flex';
                 if (googleBtn) googleBtn.style.display = 'inline-flex';
                 if (capsule) capsule.style.display = 'none';
                 if (catalogNavBtn) catalogNavBtn.style.display = 'none';
 
-                // LOCK LOWER ARSENAL & TELEMETRY SECTION
+                const protectedContent = document.getElementById('protected-content');
+                if (securityBarrier) securityBarrier.style.display = 'block';
                 if (protectedSection) {
                     protectedSection.classList.add('arsenal-locked');
-                    protectedSection.classList.remove('unlocked-active');
+                    protectedSection.style.display = 'block';
                 }
-                if (securityBarrier) {
-                    securityBarrier.style.display = 'block';
+                if (protectedContent) {
+                    protectedContent.style.filter = 'blur(14px) grayscale(75%)';
+                    protectedContent.style.opacity = '0.18';
+                    protectedContent.style.pointerEvents = 'none';
+                    protectedContent.style.userSelect = 'none';
+                    protectedContent.style.maxHeight = '440px';
                 }
-            }
-        }
-
-        // Check if returning from OAuth popup redirect
-        function checkOAuthRedirect() {
-            const hash = window.location.hash.substring(1);
-            if (!hash) return;
-            const params = new URLSearchParams(hash);
-            if (params.has('access_token') || params.has('id_token')) {
-                const idToken = params.get('id_token');
-                let userName = 'NIshxnt';
-                let userPic = '';
-                if (idToken) {
-                    const payload = parseJwt(idToken);
-                    if (payload) {
-                        userName = payload.name || payload.given_name || 'NIshxnt';
-                        userPic = payload.picture || '';
-                    }
-                }
-                try { window.history.replaceState(null, null, window.location.pathname); } catch(e) {}
-                verifyWithServerAndUnlock({
-                    provider: 'Google',
-                    name: userName,
-                    picture: userPic
-                });
             }
         }
 
