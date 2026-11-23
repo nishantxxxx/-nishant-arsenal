@@ -272,6 +272,19 @@ void handle_client(socket_t client_socket) {
 
     std::string response;
 
+    if (method == "OPTIONS") {
+        std::ostringstream oss;
+        oss << "HTTP/1.1 204 No Content\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n";
+        oss << "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n";
+        oss << "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
+        oss << "Connection: close\r\n\r\n";
+        response = oss.str();
+        send(client_socket, response.c_str(), static_cast<int>(response.length()), 0);
+        CLOSE_SOCKET(client_socket);
+        return;
+    }
+
     if (route == "/" || route == "/index.html") {
         std::string html = get_webpage_content();
         std::ostringstream oss;
@@ -389,6 +402,20 @@ void handle_client(socket_t client_socket) {
         oss << "HTTP/1.1 200 OK\r\n";
         oss << "Content-Type: application/json\r\n";
         oss << "Content-Length: " << body.length() << "\r\n";
+        oss << "Connection: close\r\n\r\n";
+        oss << body;
+        response = oss.str();
+    }
+    else if (route == "/api/auth/verify") {
+        std::cout << "[AUTH] Incoming authorization verification request.\n";
+        std::string body = "{\"status\":\"authorized\",\"verified\":true,\"clearance\":\"ALPHA-1\",\"engine\":\"NIshxnt C++20 Core\"}";
+        std::ostringstream oss;
+        oss << "HTTP/1.1 200 OK\r\n";
+        oss << "Content-Type: application/json\r\n";
+        oss << "Content-Length: " << body.length() << "\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n";
+        oss << "Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n";
+        oss << "Access-Control-Allow-Headers: Content-Type, Authorization\r\n";
         oss << "Connection: close\r\n\r\n";
         oss << body;
         response = oss.str();

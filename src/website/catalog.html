@@ -1508,6 +1508,15 @@
             .about-slide-topbar { padding: 16px 20px; }
         }
     </style>
+    <script>
+        // STRICT CLEARANCE GUARD: Redirect immediately if unauthenticated
+        (function() {
+            var auth = sessionStorage.getItem('arsenal_session_user') || localStorage.getItem('arsenal_user') || localStorage.getItem('arsenal_auth_user');
+            if (!auth) {
+                window.location.replace('/?auth_required=true');
+            }
+        })();
+    </script>
 </head>
 <body>
 
@@ -1553,6 +1562,11 @@
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 About Developer
             </button>
+            <div class="user-capsule" id="catalog-user-capsule" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,30,66,0.12); border:1px solid rgba(255,30,66,0.4); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">
+                <span style="color:#10b981; font-size:10px;">&#9679;</span>
+                <span id="catalog-user-name" style="color:#fff;">NIshxnt</span>
+                <button onclick="handleCatalogLogout()" title="Log out and lock catalog" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:11px; font-weight:700; margin-left:4px; padding:0 2px;">&#10005;</button>
+            </div>
         </div>
     </nav>
 
@@ -2616,6 +2630,28 @@
         }
 
         requestAnimationFrame(renderFX);
+    
+        function handleCatalogLogout() {
+            sessionStorage.removeItem('arsenal_session_user');
+            localStorage.removeItem('arsenal_user');
+            localStorage.removeItem('arsenal_auth_user');
+            window.location.replace('/?auth_required=true');
+        }
+
+        function initCatalogUser() {
+            const raw = sessionStorage.getItem('arsenal_session_user') || localStorage.getItem('arsenal_user') || localStorage.getItem('arsenal_auth_user');
+            if (!raw) {
+                window.location.replace('/?auth_required=true');
+                return;
+            }
+            try {
+                const u = JSON.parse(raw);
+                const nameEl = document.getElementById('catalog-user-name');
+                if (nameEl && u.name) nameEl.textContent = u.name;
+            } catch(e) {}
+        }
+        window.addEventListener('DOMContentLoaded', initCatalogUser);
+
     </script>
 </body>
 </html>

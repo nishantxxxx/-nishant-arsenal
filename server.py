@@ -78,6 +78,31 @@ class FastStreamingHandler(SimpleHTTPRequestHandler):
 
         return super().do_GET()
 
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
+    def do_POST(self):
+        clean_path = self.path.split("?")[0].rstrip("/")
+        if clean_path == "/api/auth/verify":
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            print(f"[AUTH VERIFY] Incoming authorization payload: {post_data[:140]}")
+            
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            response_json = '{"status":"authorized","verified":true,"clearance":"ALPHA-1","message":"Access granted by NIshxnt Defense Gateway"}\n'
+            self.wfile.write(response_json.encode('utf-8'))
+            return
+
+        self.send_response(404)
+        self.end_headers()
+
 
 if __name__ == "__main__":
     server = HTTPServer(("0.0.0.0", PORT), FastStreamingHandler)
