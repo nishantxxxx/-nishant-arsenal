@@ -1556,25 +1556,34 @@
 
         .logout-tilt-wrapper {
             perspective: 1400px;
-            transform-style: preserve-3d;
             padding: 20px;
             width: 100%;
             max-width: 520px;
+            pointer-events: auto;
         }
 
         .logout-tilt-card {
             position: relative;
-            background: rgba(14, 18, 27, 0.75);
+            background: rgba(14, 18, 27, 0.85);
             border: 1px solid rgba(255, 30, 66, 0.55);
             border-radius: 20px;
+            overflow: hidden;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
-            transform-style: preserve-3d;
             will-change: transform;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             user-select: none;
             -webkit-user-select: none;
             pointer-events: auto;
+        }
+
+        .logout-video-container,
+        .logout-video,
+        .logout-video-scrim,
+        .logout-glare {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
         .logout-video-container {
@@ -1589,21 +1598,20 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.6) contrast(1.1);
+            filter: brightness(0.55) contrast(1.15);
             transform: scale(1.05);
         }
 
         .logout-video-scrim {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(7, 9, 14, 0.65) 0%, rgba(10, 12, 18, 0.84) 55%, rgba(6, 8, 12, 0.96) 100%);
+            background: linear-gradient(180deg, rgba(7, 9, 14, 0.72) 0%, rgba(10, 12, 18, 0.88) 55%, rgba(6, 8, 12, 0.98) 100%);
         }
 
         .logout-glare {
             position: absolute;
             inset: 0;
             z-index: 2;
-            pointer-events: none;
             border-radius: 20px;
             background: radial-gradient(circle 380px at 50% 50%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 30, 66, 0.1) 45%, transparent 75%);
             mix-blend-mode: overlay;
@@ -1613,14 +1621,12 @@
 
         .logout-card-body {
             position: relative;
-            z-index: 10;
+            z-index: 10 !important;
             padding: 38px 32px 32px;
             text-align: center;
-            transform: translateZ(35px);
-            transform-style: preserve-3d;
+            pointer-events: auto !important;
             user-select: none;
             -webkit-user-select: none;
-            pointer-events: auto !important;
         }
 
         .logout-badge {
@@ -1638,7 +1644,7 @@
             text-transform: uppercase;
             margin-bottom: 18px;
             box-shadow: 0 0 15px rgba(255, 30, 66, 0.35);
-            transform: translateZ(20px);
+            pointer-events: none;
         }
 
         .pulse-dot {
@@ -1663,7 +1669,7 @@
             color: #ffffff;
             margin-bottom: 12px;
             text-shadow: 0 0 20px rgba(255, 30, 66, 0.45);
-            transform: translateZ(25px);
+            pointer-events: none;
         }
 
         .logout-warning {
@@ -1672,19 +1678,16 @@
             font-weight: 500;
             line-height: 1.5;
             margin-bottom: 28px;
-            transform: translateZ(15px);
+            pointer-events: none;
         }
 
         .logout-btn-group {
             display: flex;
             gap: 12px;
             justify-content: center;
-            transform: translateZ(30px);
-            user-select: none;
-            -webkit-user-select: none;
-            pointer-events: auto !important;
             position: relative;
-            z-index: 50;
+            z-index: 50 !important;
+            pointer-events: auto !important;
         }
 
         .btn-logout-cancel {
@@ -1699,16 +1702,16 @@
             cursor: pointer !important;
             pointer-events: auto !important;
             position: relative;
-            z-index: 60;
+            z-index: 100 !important;
             user-select: none;
             -webkit-user-select: none;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-logout-cancel:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.45);
             transform: translateY(-2px);
         }
 
@@ -1729,11 +1732,11 @@
             cursor: pointer !important;
             pointer-events: auto !important;
             position: relative;
-            z-index: 60;
+            z-index: 100 !important;
             user-select: none;
             -webkit-user-select: none;
             box-shadow: 0 0 25px rgba(255, 30, 66, 0.5);
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-logout-confirm:hover {
@@ -1741,7 +1744,7 @@
             box-shadow: 0 0 35px rgba(255, 30, 66, 0.85);
             transform: translateY(-2px);
         }
-    </style>
+        </style>
     <script>
         // STRICT CLEARANCE GUARD: Redirect immediately if unauthenticated
         (function() {
@@ -2898,11 +2901,7 @@
             startLogoutTiltLoop();
         }
 
-        function closeLogoutModal(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+        function closeLogoutModal() {
             const backdrop = document.getElementById('logout-modal-backdrop');
             if (backdrop) backdrop.classList.remove('active');
             logoutModalActive = false;
@@ -2913,20 +2912,14 @@
         }
 
         function handleLogoutBackdropClick(e) {
-            if (e.target && e.target.id === 'logout-modal-backdrop') {
-                closeLogoutModal(e);
+            if (e && e.target && e.target.id === 'logout-modal-backdrop') {
+                closeLogoutModal();
             }
         }
 
-        let catLogoutInProg = false;
-        function executeLogoutConfirm(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            if (catLogoutInProg) return;
-            catLogoutInProg = true;
-            sessionStorage.removeItem('arsenal_session_user');
+        function executeLogoutConfirm() {
+            sessionStorage.clear();
+            localStorage.removeItem('arsenal_session_user');
             localStorage.removeItem('arsenal_user');
             localStorage.removeItem('arsenal_auth_user');
             closeLogoutModal();
@@ -2969,7 +2962,7 @@
             const glare = document.getElementById('logout-glare');
 
             if (card) {
-                card.style.transform = `rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
+                card.style.transform = `perspective(1200px) rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
             }
             if (glare) {
                 glare.style.background = `radial-gradient(circle 400px at ${logoutCurGlareX.toFixed(1)}% ${logoutCurGlareY.toFixed(1)}%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 30, 66, 0.12) 45%, transparent 75%)`;
@@ -3042,10 +3035,10 @@
                     </p>
 
                     <div class="logout-btn-group">
-                        <button class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal(event)" onpointerdown="closeLogoutModal(event)">
+                        <button type="button" class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal()">
                             <span>Abort / Return</span>
                         </button>
-                        <button class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm(event)" onpointerdown="executeLogoutConfirm(event)">
+                        <button type="button" class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>

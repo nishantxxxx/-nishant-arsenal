@@ -264,9 +264,16 @@ void handle_client(socket_t client_socket) {
 
     // Parse HTTP Method & Route
     std::string request_str(buffer);
-    std::string method, route, http_version;
+    std::string method, raw_route, http_version;
     std::istringstream stream(request_str);
-    stream >> method >> route >> http_version;
+    stream >> method >> raw_route >> http_version;
+
+    // Strip query string from route so routes like "/?auth_required=true" match "/"
+    std::string route = raw_route;
+    auto query_pos = route.find('?');
+    if (query_pos != std::string::npos) {
+        route = route.substr(0, query_pos);
+    }
 
     std::cout << "[HTTP] " << method << " " << route << " -> Total Requests: " << g_total_requests << "\n";
 

@@ -282,24 +282,49 @@
             display: none;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 30, 66, 0.1);
-            border: 1px solid var(--accent-red);
-            padding: 5px 14px 5px 6px;
-            border-radius: 24px;
-            box-shadow: 0 0 15px rgba(255, 30, 66, 0.3);
+            background: rgba(14, 18, 27, 0.88);
+            border: 1.5px solid rgba(255, 30, 66, 0.55);
+            padding: 5px 14px 5px 8px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 30, 66, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            flex-shrink: 0;
         }
 
         .user-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px !important;
+            min-height: 32px !important;
+            max-width: 32px !important;
+            max-height: 32px !important;
+            border-radius: 50% !important;
             background: #ff1e42;
             color: #ffffff;
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 12px;
+            font-size: 13px;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 0 12px rgba(255, 30, 66, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .user-avatar-img {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px !important;
+            min-height: 32px !important;
+            max-width: 32px !important;
+            max-height: 32px !important;
+            border-radius: 50% !important;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(255, 30, 66, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
         }
 
         .user-name {
@@ -365,24 +390,34 @@
 
         .logout-tilt-wrapper {
             perspective: 1400px;
-            transform-style: preserve-3d;
             padding: 20px;
             width: 100%;
             max-width: 520px;
+            pointer-events: auto;
         }
 
         .logout-tilt-card {
             position: relative;
-            background: rgba(14, 18, 27, 0.75);
+            background: rgba(14, 18, 27, 0.85);
             border: 1px solid rgba(255, 30, 66, 0.55);
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
-            transform-style: preserve-3d;
             will-change: transform;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            transform: translateZ(0);
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+        }
+
+        .logout-video-container,
+        .logout-video,
+        .logout-video-scrim,
+        .logout-glare {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
         .logout-video-container {
@@ -397,21 +432,20 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.6) contrast(1.1);
+            filter: brightness(0.55) contrast(1.15);
             transform: scale(1.05);
         }
 
         .logout-video-scrim {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(7, 9, 14, 0.65) 0%, rgba(10, 12, 18, 0.84) 55%, rgba(6, 8, 12, 0.96) 100%);
+            background: linear-gradient(180deg, rgba(7, 9, 14, 0.72) 0%, rgba(10, 12, 18, 0.88) 55%, rgba(6, 8, 12, 0.98) 100%);
         }
 
         .logout-glare {
             position: absolute;
             inset: 0;
             z-index: 2;
-            pointer-events: none;
             border-radius: 20px;
             background: radial-gradient(circle 380px at 50% 50%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 30, 66, 0.1) 45%, transparent 75%);
             mix-blend-mode: overlay;
@@ -421,11 +455,12 @@
 
         .logout-card-body {
             position: relative;
-            z-index: 3;
+            z-index: 10 !important;
             padding: 38px 32px 32px;
             text-align: center;
-            transform: translateZ(35px);
-            transform-style: preserve-3d;
+            pointer-events: auto !important;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .logout-badge {
@@ -443,7 +478,7 @@
             text-transform: uppercase;
             margin-bottom: 18px;
             box-shadow: 0 0 15px rgba(255, 30, 66, 0.35);
-            transform: translateZ(20px);
+            pointer-events: none;
         }
 
         .pulse-dot {
@@ -468,7 +503,7 @@
             color: #ffffff;
             margin-bottom: 12px;
             text-shadow: 0 0 20px rgba(255, 30, 66, 0.45);
-            transform: translateZ(25px);
+            pointer-events: none;
         }
 
         .logout-warning {
@@ -477,53 +512,16 @@
             font-weight: 500;
             line-height: 1.5;
             margin-bottom: 28px;
-            transform: translateZ(15px);
+            pointer-events: none;
         }
 
         .logout-btn-group {
             display: flex;
             gap: 12px;
             justify-content: center;
-            transform: translateZ(30px);
-        }
-
-        .logout-tilt-card {
             position: relative;
-            background: rgba(14, 18, 27, 0.75);
-            border: 1px solid rgba(255, 30, 66, 0.55);
-            border-radius: 20px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 30, 66, 0.35);
-            transform-style: preserve-3d;
-            will-change: transform;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            user-select: none;
-            -webkit-user-select: none;
-            pointer-events: auto;
-        }
-
-        .logout-card-body {
-            position: relative;
-            z-index: 10;
-            padding: 38px 32px 32px;
-            text-align: center;
-            transform: translateZ(35px);
-            transform-style: preserve-3d;
-            user-select: none;
-            -webkit-user-select: none;
+            z-index: 50 !important;
             pointer-events: auto !important;
-        }
-
-        .logout-btn-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            transform: translateZ(30px);
-            user-select: none;
-            -webkit-user-select: none;
-            pointer-events: auto !important;
-            position: relative;
-            z-index: 50;
         }
 
         .btn-logout-cancel {
@@ -538,16 +536,16 @@
             cursor: pointer !important;
             pointer-events: auto !important;
             position: relative;
-            z-index: 60;
+            z-index: 100 !important;
             user-select: none;
             -webkit-user-select: none;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-logout-cancel:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.45);
             transform: translateY(-2px);
         }
 
@@ -568,11 +566,11 @@
             cursor: pointer !important;
             pointer-events: auto !important;
             position: relative;
-            z-index: 60;
+            z-index: 100 !important;
             user-select: none;
             -webkit-user-select: none;
             box-shadow: 0 0 25px rgba(255, 30, 66, 0.5);
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-logout-confirm:hover {
@@ -580,8 +578,34 @@
             box-shadow: 0 0 35px rgba(255, 30, 66, 0.85);
             transform: translateY(-2px);
         }
+        
+        .barrier-pulse-highlight {
+            animation: barrierShakePulse 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+        }
 
-        /* MAIN HERO WORKFLOW SHOWCASE (Matches User Reference Image) */
+        @keyframes barrierShakePulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            15% { transform: translateX(calc(-50% - 12px)) scale(1.03); box-shadow: 0 0 70px rgba(255,30,66,0.85); }
+            30% { transform: translateX(calc(-50% + 12px)) scale(1.03); }
+            45% { transform: translateX(calc(-50% - 8px)) scale(1.02); }
+            60% { transform: translateX(calc(-50% + 8px)) scale(1.02); }
+            75% { transform: translateX(calc(-50% - 4px)) scale(1.01); }
+        }
+
+    
+        #nav-catalog-btn {
+            display: none;
+            transition: all 0.3s ease;
+            animation: navItemPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes navItemPop {
+            0% { opacity: 0; transform: translateY(-6px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+    
+
+/* MAIN HERO WORKFLOW SHOWCASE (Matches User Reference Image) */
         .showcase-section {
             padding: 80px 24px 60px;
             max-width: 1200px;
@@ -1182,48 +1206,23 @@
             }
         }
     
-        /* =========================================================================
-           PROTECTED ARSENAL SECURITY BARRIER & SERVER CLEARANCE STYLES
-        ========================================================================= */
+    
+        /* PROTECTED ARSENAL SECURITY BARRIER & LOCKED STYLES */
         .arsenal-zone {
             position: relative;
+            padding: 40px 24px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
             width: 100%;
-            margin-top: 40px;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .arsenal-locked .protected-content {
-            filter: blur(14px) grayscale(75%);
-            opacity: 0.18;
+            filter: blur(14px) brightness(0.35);
             pointer-events: none;
             user-select: none;
-            max-height: 440px;
+            max-height: 480px;
             overflow: hidden;
-            transform: scale(0.985);
-            transition: filter 0.6s ease, opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .arsenal-zone:not(.arsenal-locked) .protected-content {
-            filter: blur(0px) grayscale(0%);
-            opacity: 1;
-            pointer-events: auto;
-            user-select: auto;
-            max-height: none;
-            transform: scale(1);
-            animation: arsenalUnlockSweep 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes arsenalUnlockSweep {
-            0% {
-                opacity: 0.3;
-                filter: blur(12px);
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                filter: blur(0px);
-                transform: translateY(0);
-            }
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .security-barrier {
@@ -1387,85 +1386,6 @@
             font-size: 11px;
             color: #64748b;
             font-weight: 600;
-        }
-
-        /* Floating Security Toast */
-        .security-toast {
-            position: fixed;
-            top: 80px;
-            right: 24px;
-            z-index: 9999;
-            background: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--accent-red);
-            border-radius: 12px;
-            padding: 14px 20px;
-            color: #ffffff;
-            box-shadow: 0 10px 30px rgba(255, 30, 66, 0.35);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            max-width: 380px;
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .security-toast.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .toast-icon {
-            font-size: 20px;
-        }
-
-        .toast-title {
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-        }
-
-        .toast-msg {
-            font-size: 11.5px;
-            color: #94a3b8;
-            line-height: 1.4;
-        }
-
-        .user-avatar-img {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1.5px solid var(--accent-red);
-        }
-
-    
-        .barrier-pulse-highlight {
-            animation: barrierShakePulse 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
-        }
-
-        @keyframes barrierShakePulse {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            15% { transform: translateX(calc(-50% - 12px)) scale(1.03); box-shadow: 0 0 70px rgba(255,30,66,0.85); }
-            30% { transform: translateX(calc(-50% + 12px)) scale(1.03); }
-            45% { transform: translateX(calc(-50% - 8px)) scale(1.02); }
-            60% { transform: translateX(calc(-50% + 8px)) scale(1.02); }
-            75% { transform: translateX(calc(-50% - 4px)) scale(1.01); }
-        }
-
-    
-        #nav-catalog-btn {
-            display: none;
-            transition: all 0.3s ease;
-            animation: navItemPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes navItemPop {
-            0% { opacity: 0; transform: translateY(-6px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
     </style>
@@ -1802,10 +1722,10 @@
                     </p>
 
                     <div class="logout-btn-group">
-                        <button class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal(event)" onpointerdown="closeLogoutModal(event)">
+                        <button type="button" class="btn-logout-cancel" id="btn-cancel-logout-action" onclick="closeLogoutModal()">
                             <span>Abort / Return</span>
                         </button>
-                        <button class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm(event)" onpointerdown="executeLogoutConfirm(event)">
+                        <button type="button" class="btn-logout-confirm" id="btn-confirm-logout-action" onclick="executeLogoutConfirm()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -2283,22 +2203,14 @@
         }
 
         function handleLogoutBackdropClick(e) {
-            if (e.target && e.target.id === 'logout-modal-backdrop') {
+            if (e && e.target && e.target.id === 'logout-modal-backdrop') {
                 closeLogoutModal();
             }
         }
 
-        let logoutInProg = false;
-        function executeLogoutConfirm(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            if (logoutInProg) return;
-            logoutInProg = true;
+        function executeLogoutConfirm() {
             closeLogoutModal();
             handleLogout();
-            setTimeout(() => { logoutInProg = false; }, 600);
         }
 
         window.addEventListener('mousemove', (e) => {
@@ -2310,15 +2222,12 @@
             const cardCenterX = rect.left + rect.width / 2;
             const cardCenterY = rect.top + rect.height / 2;
 
-            // Distance from center normalized to window half
             const dx = (e.clientX - cardCenterX) / (window.innerWidth * 0.5);
             const dy = (e.clientY - cardCenterY) / (window.innerHeight * 0.5);
 
-            // Clamp between -1 and 1
             const clampedX = Math.max(-1, Math.min(1, dx));
             const clampedY = Math.max(-1, Math.min(1, dy));
 
-            // Face tilts outwards towards cursor (no jitter)
             logoutTargetRotX = -clampedY * 18;
             logoutTargetRotY = clampedX * 18;
 
@@ -2331,7 +2240,6 @@
         function renderLogoutTilt() {
             if (!logoutModalActive) return;
 
-            // Ultra-smooth lerp physics factor (0.1) eliminates 100% of jitter
             logoutCurRotX += (logoutTargetRotX - logoutCurRotX) * 0.1;
             logoutCurRotY += (logoutTargetRotY - logoutCurRotY) * 0.1;
             logoutCurGlareX += (logoutTargetGlareX - logoutCurGlareX) * 0.1;
@@ -2341,7 +2249,7 @@
             const glare = document.getElementById('logout-glare');
 
             if (card) {
-                card.style.transform = `rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
+                card.style.transform = `perspective(1200px) rotateX(${logoutCurRotX.toFixed(2)}deg) rotateY(${logoutCurRotY.toFixed(2)}deg)`;
             }
             if (glare) {
                 glare.style.background = `radial-gradient(circle 400px at ${logoutCurGlareX.toFixed(1)}% ${logoutCurGlareY.toFixed(1)}%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 30, 66, 0.12) 45%, transparent 75%)`;
