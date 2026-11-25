@@ -41,10 +41,14 @@ mimetypes.add_type("image/png", ".png")
 mimetypes.add_type("image/jpeg", ".jpg")
 mimetypes.add_type("image/jpeg", ".jpeg")
 mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("image/x-icon", ".ico")
 mimetypes.add_type("text/html", ".html")
 mimetypes.add_type("text/css", ".css")
 mimetypes.add_type("application/javascript", ".js")
 mimetypes.add_type("application/octet-stream", ".pack")
+mimetypes.add_type("audio/webm", ".webm")
+mimetypes.add_type("audio/mp4", ".m4a")
+mimetypes.add_type("audio/mpeg", ".mp3")
 
 MALICIOUS_SCANNERS = [
     "sqlmap", "nikto", "dirbuster", "gobuster", "masscan",

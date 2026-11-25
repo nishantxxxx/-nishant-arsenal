@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\website">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\website\source_masters">
+      <UniqueIdentifier>{B1234567-89AB-CDEF-0123-456789ABCDEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ssl">
+      <UniqueIdentifier>{89AB12CD-34EF-5678-90AB-CDEF12345678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{789ABCDE-F012-3456-789A-BCDEF0123456}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.cpp">
+      <Filter>src</Filter>
+    </None>
+    <None Include="server.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="run.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="run_local_cpp.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="start_local.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="launch_live.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="run_https.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="install_cert.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="setup_domain.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="render.yaml">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="Dockerfile">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="start.sh">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include=".gitignore">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include=".dockerignore">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="favicon.ico">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\setup_domain.bat">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\run_server.bat">
+      <Filter>src</Filter>
+    </None>
+    <None Include="src\cert.pfx">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\generate_cert.py">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\generate_ssl.ps1">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\https_server.py">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\install_cert.bat">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\server.crt">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\server.key">
+      <Filter>src\ssl</Filter>
+    </None>
+    <None Include="src\website\index.html">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\catalog.html">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\about.html">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\blocked.html">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\core.pack">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\catalog.pack">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\about.pack">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\guard.dat">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\favicon.ico">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\arcade_bg.jpg">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\catalog_thumb.jpg">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\dev_pfp.png">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\bg_audio.webm">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\bg_audio.m4a">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\bg_video.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\catalog_bg.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video1.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video2.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video3.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video4.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video5.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video6.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\card_video7.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\feature_video1.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\feature_video2.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\feature_video3.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\feature_video4.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\logout_video.mp4">
+      <Filter>src\website</Filter>
+    </None>
+    <None Include="src\website\source_masters\index.html">
+      <Filter>src\website\source_masters</Filter>
+    </None>
+    <None Include="src\website\source_masters\catalog.html">
+      <Filter>src\website\source_masters</Filter>
+    </None>
+    <None Include="src\website\source_masters\about.html">
+      <Filter>src\website\source_masters</Filter>
+    </None>
+  </ItemGroup>
+</Project>
