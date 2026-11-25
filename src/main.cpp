@@ -250,6 +250,55 @@ std::string get_about_content() {
            "</body></html>";
 }
 
+std::string get_blocked_content() {
+    const char* paths[] = {
+        "src/website/blocked.html",
+        "src\\website\\blocked.html",
+        "website/blocked.html",
+        "website\\blocked.html",
+        "blocked.html",
+        "../src/website/blocked.html",
+        "..\\src\\website\\blocked.html",
+        "../../src/website/blocked.html",
+        "..\\..\\src\\website\\blocked.html",
+        "E:/Cpp/hehe/src/website/blocked.html",
+        "E:\\Cpp\\hehe\\src\\website\\blocked.html"
+    };
+
+    for (const char* p : paths) {
+        std::ifstream file(p, std::ios::binary);
+        if (file.is_open()) {
+            std::ostringstream ss;
+            ss << file.rdbuf();
+            return ss.str();
+        }
+    }
+
+    return "<!DOCTYPE html><html><head><title>ARXSHNAL ARCADE DEBUG DETECTED</title></head>"
+           "<body style='background:#030408;color:#ff1e42;font-family:sans-serif;text-align:center;padding:50px;'>"
+           "<h1>ARXSHNAL ARCADE DEBUG DETECTED</h1>"
+           "<p>CLOSE DEVTOOLS AND DEBUGGER</p>"
+           "</body></html>";
+}
+
+// Brutal Security & Defense Matrix Headers
+const char* G_SECURITY_HEADERS = 
+    "X-Content-Type-Options: nosniff\r\n"
+    "X-Frame-Options: DENY\r\n"
+    "Referrer-Policy: no-referrer\r\n"
+    "X-XSS-Protection: 1; mode=block\r\n"
+    "Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\r\n"
+    "Content-Security-Policy: default-src 'self' blob:; "
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com; "
+    "frame-src https://accounts.google.com; "
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+    "font-src 'self' https://fonts.gstatic.com; "
+    "img-src 'self' data: https: blob:; "
+    "media-src 'self' blob: data:; "
+    "connect-src 'self' https://accounts.google.com; "
+    "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';\r\n"
+    "X-Arsenal-Shield: ACTIVE-CLASSIFIED\r\n";
+
 void handle_client(socket_t client_socket) {
     char buffer[4096];
     int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
@@ -275,6 +324,29 @@ void handle_client(socket_t client_socket) {
         route = route.substr(0, query_pos);
     }
 
+    // Brutal Anti-Scanner & Bot Defense
+    std::string req_lower = request_str;
+    for (char &c : req_lower) c = static_cast<char>(tolower(c));
+    const char* malicious_scanners[] = {"sqlmap", "nikto", "masscan", "dirbuster", "gobuster", "acunetix", "wappalyzer", "havij", "nuclei", "zgrab"};
+    for (const char* sc : malicious_scanners) {
+        if (req_lower.find(sc) != std::string::npos) {
+            std::cout << "[SECURITY BLOCKED] Intercepted malicious scanner tool: " << sc << "\n";
+            std::string body = "{\"status\":\"denied\",\"violation\":\"MALICIOUS_SCANNER_DETECTED\",\"defense\":\"NIshxnt C++20 Core\"}";
+            std::ostringstream oss;
+            oss << "HTTP/1.1 403 Forbidden\r\n"
+                << "Content-Type: application/json\r\n"
+                << "Content-Length: " << body.length() << "\r\n"
+                << "X-Arsenal-Shield: BLOCKED\r\n"
+                << "Connection: close\r\n\r\n"
+                << body;
+            std::string res = oss.str();
+            send(client_socket, res.c_str(), static_cast<int>(res.length()), 0);
+            CLOSE_SOCKET(client_socket);
+            return;
+        }
+    }
+
+
     std::cout << "[HTTP] " << method << " " << route << " -> Total Requests: " << g_total_requests << "\n";
 
     std::string response;
@@ -292,6 +364,15 @@ void handle_client(socket_t client_socket) {
         return;
     }
 
+    if (route == "/favicon.ico") {
+        std::ostringstream oss;
+        oss << "HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n";
+        response = oss.str();
+        send(client_socket, response.c_str(), static_cast<int>(response.length()), 0);
+        CLOSE_SOCKET(client_socket);
+        return;
+    }
+
     if (route == "/" || route == "/index.html") {
         std::string html = get_webpage_content();
         std::ostringstream oss;
@@ -299,7 +380,7 @@ void handle_client(socket_t client_socket) {
         oss << "Content-Type: text/html; charset=UTF-8\r\n";
         oss << "Content-Length: " << html.length() << "\r\n";
         oss << "Connection: close\r\n";
-        oss << "Access-Control-Allow-Origin: *\r\n\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
         oss << html;
         response = oss.str();
     }
@@ -310,7 +391,7 @@ void handle_client(socket_t client_socket) {
         oss << "Content-Type: text/html; charset=UTF-8\r\n";
         oss << "Content-Length: " << html.length() << "\r\n";
         oss << "Connection: close\r\n";
-        oss << "Access-Control-Allow-Origin: *\r\n\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
         oss << html;
         response = oss.str();
     }
@@ -321,7 +402,18 @@ void handle_client(socket_t client_socket) {
         oss << "Content-Type: text/html; charset=UTF-8\r\n";
         oss << "Content-Length: " << html.length() << "\r\n";
         oss << "Connection: close\r\n";
-        oss << "Access-Control-Allow-Origin: *\r\n\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
+        oss << html;
+        response = oss.str();
+    }
+    else if (route == "/blocked" || route == "/blocked.html") {
+        std::string html = get_blocked_content();
+        std::ostringstream oss;
+        oss << "HTTP/1.1 200 OK\r\n";
+        oss << "Content-Type: text/html; charset=UTF-8\r\n";
+        oss << "Content-Length: " << html.length() << "\r\n";
+        oss << "Connection: close\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
         oss << html;
         response = oss.str();
     }
@@ -344,6 +436,8 @@ void handle_client(socket_t client_socket) {
         else if (ext == ".ico") mime = "image/x-icon";
         else if (ext == ".css") mime = "text/css";
         else if (ext == ".js") mime = "application/javascript";
+        else if (ext == ".pack") mime = "text/plain";
+        else if (ext == ".dat") mime = "text/plain";
         else if (ext == ".html") mime = "text/html; charset=UTF-8";
 
         std::vector<std::string> vpaths = {
@@ -371,7 +465,7 @@ void handle_client(socket_t client_socket) {
                 oss << "Content-Length: " << content.length() << "\r\n";
                 oss << "Accept-Ranges: bytes\r\n";
                 oss << "Connection: close\r\n";
-                oss << "Access-Control-Allow-Origin: *\r\n\r\n";
+                oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
                 std::string header = oss.str();
                 send(client_socket, header.c_str(), static_cast<int>(header.length()), 0);
                 send(client_socket, content.c_str(), static_cast<int>(content.length()), 0);
@@ -399,7 +493,7 @@ void handle_client(socket_t client_socket) {
         oss << "Content-Type: application/json; charset=UTF-8\r\n";
         oss << "Content-Length: " << body.length() << "\r\n";
         oss << "Connection: close\r\n";
-        oss << "Access-Control-Allow-Origin: *\r\n\r\n";
+        oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
         oss << body;
         response = oss.str();
     }
