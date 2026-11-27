@@ -33,6 +33,17 @@
   #define CLOSE_SOCKET(s) close_socket_graceful(s)
 #endif
 
+inline bool send_all(socket_t sock, const char* data, size_t total) {
+    size_t sent = 0;
+    while (sent < total) {
+        int to_send = static_cast<int>((total - sent) > 65536 ? 65536 : (total - sent));
+        int n = send(sock, data + sent, to_send, 0);
+        if (n <= 0) return false;
+        sent += static_cast<size_t>(n);
+    }
+    return true;
+}
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -43,10 +54,30 @@
 #include <atomic>
 #include <iomanip>
 #include <regex>
+#include <set>
+#include <mutex>
+#include <ctime>
 
-// Global metrics
+// Global metrics & Telemetry
 std::atomic<uint64_t> g_total_requests(0);
+std::atomic<uint64_t> g_total_page_views(0);
+std::set<std::string> g_unique_ips;
+std::mutex g_telemetry_mutex;
 auto g_start_time = std::chrono::steady_clock::now();
+
+std::string get_host_time() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm tm_buf;
+#ifdef _WIN32
+    localtime_s(&tm_buf, &now_c);
+#else
+    localtime_r(&now_c, &tm_buf);
+#endif
+    char time_str[32];
+    std::strftime(time_str, sizeof(time_str), "%H:%M:%S", &tm_buf);
+    return std::string(time_str);
+}
 
 #ifdef _WIN32
 PROCESS_INFORMATION g_tunnel_pi{};
@@ -328,7 +359,7 @@ std::string get_favicon_content() {
 const char* G_SECURITY_HEADERS = 
     "X-Content-Type-Options: nosniff\r\n"
     "X-Frame-Options: DENY\r\n"
-    "Referrer-Policy: no-referrer\r\n"
+    "Referrer-Policy: strict-origin-when-cross-origin\r\n"
     "X-XSS-Protection: 1; mode=block\r\n"
     "Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\r\n"
     "Content-Security-Policy: default-src 'self' blob:; "
@@ -342,7 +373,12 @@ const char* G_SECURITY_HEADERS =
     "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';\r\n"
     "X-Arsenal-Shield: ACTIVE-CLASSIFIED\r\n";
 
-void handle_client(socket_t client_socket) {
+void handle_client(socket_t client_socket, sockaddr_in client_addr) {
+    char ip_buf[INET_ADDRSTRLEN] = "127.0.0.1";
+    inet_ntop(AF_INET, &(client_addr.sin_addr), ip_buf, INET_ADDRSTRLEN);
+    std::string client_ip = ip_buf;
+    int client_port = ntohs(client_addr.sin_port);
+
     char buffer[4096];
     int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
     
@@ -391,6 +427,21 @@ void handle_client(socket_t client_socket) {
 
 
     std::cout << "[HTTP] " << method << " " << route << " -> Total Requests: " << g_total_requests << "\n";
+
+    if (route == "/" || route == "/index.html" || route == "/catalog" || route == "/catalog.html" || route == "/about" || route == "/about.html") {
+        g_total_page_views++;
+        size_t unique_count = 0;
+        {
+            std::lock_guard<std::mutex> lock(g_telemetry_mutex);
+            g_unique_ips.insert(client_ip);
+            unique_count = g_unique_ips.size();
+        }
+        std::cout << "\033[90m[" << get_host_time() << "]\033[0m \033[96m[🚀 SITE OPEN]\033[0m "
+                  << "IP: \033[97m" << client_ip << ":" << client_port << "\033[0m | "
+                  << "Route: \033[93m" << route << "\033[0m | "
+                  << "Total Page Views: \033[92m" << g_total_page_views << "\033[0m | "
+                  << "Unique Visitors: \033[95m" << unique_count << "\033[0m\n";
+    }
 
     std::string response;
 
@@ -507,21 +558,70 @@ void handle_client(socket_t client_socket) {
             "E:\\Cpp\\hehe\\src\\website\\" + filename
         };
         for (const auto& vp : vpaths) {
-            std::ifstream vf(vp, std::ios::binary);
+            std::ifstream vf(vp, std::ios::binary | std::ios::ate);
             if (vf.is_open()) {
-                std::ostringstream ss;
-                ss << vf.rdbuf();
-                std::string content = ss.str();
+                std::streamsize file_size = vf.tellg();
+                vf.seekg(0, std::ios::beg);
+
+                size_t start_byte = 0;
+                size_t end_byte = static_cast<size_t>(file_size > 0 ? (file_size - 1) : 0);
+                bool is_range = false;
+
+                size_t range_pos = request_str.find("Range: bytes=");
+                if (range_pos != std::string::npos) {
+                    size_t eq_pos = range_pos + 13;
+                    size_t dash_pos = request_str.find('-', eq_pos);
+                    if (dash_pos != std::string::npos) {
+                        is_range = true;
+                        std::string s_start = request_str.substr(eq_pos, dash_pos - eq_pos);
+                        if (!s_start.empty()) {
+                            try { start_byte = static_cast<size_t>(std::stoull(s_start)); } catch (...) {}
+                        }
+                        size_t rn_pos = request_str.find("\r\n", dash_pos);
+                        if (rn_pos != std::string::npos && rn_pos > dash_pos + 1) {
+                            std::string s_end = request_str.substr(dash_pos + 1, rn_pos - dash_pos - 1);
+                            if (!s_end.empty()) {
+                                try { end_byte = static_cast<size_t>(std::stoull(s_end)); } catch (...) {}
+                            }
+                        }
+                        if (end_byte >= static_cast<size_t>(file_size)) {
+                            end_byte = static_cast<size_t>(file_size > 0 ? (file_size - 1) : 0);
+                        }
+                    }
+                }
+
+                size_t content_len = (end_byte >= start_byte && file_size > 0) ? (end_byte - start_byte + 1) : 0;
+
                 std::ostringstream oss;
-                oss << "HTTP/1.1 200 OK\r\n";
+                if (is_range) {
+                    oss << "HTTP/1.1 206 Partial Content\r\n";
+                    oss << "Content-Range: bytes " << start_byte << "-" << end_byte << "/" << file_size << "\r\n";
+                } else {
+                    oss << "HTTP/1.1 200 OK\r\n";
+                }
                 oss << "Content-Type: " << mime << "\r\n";
-                oss << "Content-Length: " << content.length() << "\r\n";
+                oss << "Content-Length: " << content_len << "\r\n";
                 oss << "Accept-Ranges: bytes\r\n";
                 oss << "Connection: close\r\n";
                 oss << "Access-Control-Allow-Origin: *\r\n" << G_SECURITY_HEADERS << "\r\n";
+
                 std::string header = oss.str();
-                send(client_socket, header.c_str(), static_cast<int>(header.length()), 0);
-                send(client_socket, content.c_str(), static_cast<int>(content.length()), 0);
+                send_all(client_socket, header.c_str(), header.length());
+
+                vf.seekg(start_byte, std::ios::beg);
+                char chunk[65536];
+                size_t remaining = content_len;
+                while (remaining > 0 && vf.good()) {
+                    size_t to_read = (remaining < sizeof(chunk)) ? remaining : sizeof(chunk);
+                    vf.read(chunk, to_read);
+                    std::streamsize bytes_read = vf.gcount();
+                    if (bytes_read <= 0) break;
+                    if (!send_all(client_socket, chunk, static_cast<size_t>(bytes_read))) {
+                        break;
+                    }
+                    remaining -= static_cast<size_t>(bytes_read);
+                }
+
                 CLOSE_SOCKET(client_socket);
                 return;
             }
@@ -559,6 +659,89 @@ void handle_client(socket_t client_socket) {
         oss << "Connection: close\r\n\r\n";
         oss << body;
         response = oss.str();
+    }
+    else if (route == "/api/telemetry") {
+        std::string payload = "";
+        auto body_pos = request_str.find("\r\n\r\n");
+        if (body_pos != std::string::npos) {
+            payload = request_str.substr(body_pos + 4);
+        }
+
+        auto get_field = [&](const std::string& key) -> std::string {
+            std::string search = "\"" + key + "\":\"";
+            auto p1 = payload.find(search);
+            if (p1 != std::string::npos) {
+                p1 += search.length();
+                auto p2 = payload.find("\"", p1);
+                if (p2 != std::string::npos) {
+                    return payload.substr(p1, p2 - p1);
+                }
+            }
+            std::string search_num = "\"" + key + "\":";
+            auto np1 = payload.find(search_num);
+            if (np1 != std::string::npos) {
+                np1 += search_num.length();
+                while (np1 < payload.length() && (payload[np1] == ' ' || payload[np1] == '\t')) np1++;
+                auto np2 = payload.find_first_of(",}\r\n", np1);
+                if (np2 != std::string::npos) {
+                    return payload.substr(np1, np2 - np1);
+                }
+            }
+            return "";
+        };
+
+        std::string ev_type = get_field("type");
+        std::string vid = get_field("vid");
+        std::string page = get_field("page");
+
+        std::lock_guard<std::mutex> lock(g_telemetry_mutex);
+        if (ev_type == "TAP") {
+            std::string target = get_field("target");
+            std::string x = get_field("x");
+            std::string y = get_field("y");
+            std::cout << "\033[90m[" << get_host_time() << "]\033[0m \033[93m[🎯 USER TAP]\033[0m "
+                      << "IP: \033[97m" << client_ip << "\033[0m | "
+                      << "ID: \033[96m" << (vid.empty() ? "GUEST" : vid) << "\033[0m | "
+                      << "Target: \033[92m" << target << "\033[0m "
+                      << "at (X:" << x << ", Y:" << y << ") | "
+                      << "Page: " << page << "\n";
+        }
+        else if (ev_type == "BGM") {
+            std::string state = get_field("state");
+            std::string vol = get_field("vol");
+            std::cout << "\033[90m[" << get_host_time() << "]\033[0m \033[95m[🎵 BGM SOUND]\033[0m "
+                      << "IP: \033[97m" << client_ip << "\033[0m | "
+                      << "State: \033[92m" << state << "\033[0m | "
+                      << "Vol: \033[93m" << vol << "%\033[0m\n";
+        }
+        else if (ev_type == "PAGE_OPEN") {
+            std::string ref = get_field("referrer");
+            std::cout << "\033[90m[" << get_host_time() << "]\033[0m \033[96m[🌐 CLIENT SESSION]\033[0m "
+                      << "IP: \033[97m" << client_ip << "\033[0m | "
+                      << "ID: \033[96m" << vid << "\033[0m | "
+                      << "Referrer: " << ref << " | Page: " << page << "\n";
+        }
+        else if (ev_type == "AUTH") {
+            std::string provider = get_field("provider");
+            std::string name = get_field("name");
+            std::cout << "\033[90m[" << get_host_time() << "]\033[0m \033[91m[🛡️ AUTH CLEARANCE]\033[0m "
+                      << "IP: \033[97m" << client_ip << "\033[0m | "
+                      << "Provider: \033[93m" << provider << "\033[0m | "
+                      << "User: \033[97m" << name << "\033[0m | "
+                      << "Clearance: \033[92mALPHA-1\033[0m\n";
+        }
+
+        std::ostringstream oss;
+        oss << "HTTP/1.1 200 OK\r\n"
+            << "Content-Type: application/json\r\n"
+            << "Content-Length: 15\r\n"
+            << "Access-Control-Allow-Origin: *\r\n"
+            << "Connection: close\r\n\r\n"
+            << "{\"status\":\"ok\"}";
+        std::string res = oss.str();
+        send_all(client_socket, res.c_str(), res.length());
+        CLOSE_SOCKET(client_socket);
+        return;
     }
     else if (route == "/api/auth/verify") {
         std::cout << "[AUTH] Incoming authorization verification request.\n";
@@ -657,7 +840,7 @@ void start_listener(int port, bool loopback_only = false) {
         socket_t client_socket = accept(s, (sockaddr*)&client_addr, &client_size);
         if (client_socket == INVALID_SOCKET) continue;
 
-        std::thread(handle_client, client_socket).detach();
+        std::thread(handle_client, client_socket, client_addr).detach();
     }
 }
 
@@ -707,8 +890,14 @@ int prompt_mode() {
 
 int main(int argc, char* argv[]) {
 #ifdef _WIN32
-    SetConsoleTitleA("NIshxnt Arsenal - C++ Web Server");
+    SetConsoleTitleA("NIshxnt Arsenal - Live Telemetry & Server Engine");
     SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE);
+
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    if (GetConsoleMode(hOut, &dwMode)) {
+        SetConsoleMode(hOut, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
 
     WSADATA wsaData;
     int wsaerr = WSAStartup(MAKEWORD(2, 2), &wsaData);

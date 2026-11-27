@@ -3,83 +3,104 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
-</head>
 <!-- ⚡ ARXSHNAL ARCADE // CLASSIFIED CORE -->
 <!-- [ACCESS CONTROL MATRIX ACTIVE // UNAUTHORIZED DEVTOOLS FORBIDDEN] -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
-(function(){
-    function triggerBreach(e){
+(function() {
+    'use strict';
+    let isLocked = false;
+
+    function triggerBreach(e) {
         if (e) {
-            try { e.preventDefault(); } catch(err) {}
-            try { e.stopPropagation(); } catch(err) {}
-            try { e.stopImmediatePropagation(); } catch(err) {}
+            try { e.preventDefault(); } catch(x) {}
+            try { e.stopPropagation(); } catch(x) {}
+            try { e.stopImmediatePropagation(); } catch(x) {}
         }
+        if (isLocked) return false;
+        isLocked = true;
+
+        // 1. Purge all authenticated sessions & storage
+        try { sessionStorage.clear(); localStorage.clear(); } catch(x) {}
+
+        // 2. Kill all media immediately
+        try {
+            document.querySelectorAll('video, audio').forEach(el => {
+                try { el.pause(); el.src = ''; el.remove(); } catch(x) {}
+            });
+        } catch(x) {}
+
+        // 3. NUKE ENTIRE DOM: DevTools Elements tab becomes 100% EMPTY!
+        try {
+            document.documentElement.innerHTML = '';
+            if (document.body) document.body.innerHTML = '';
+            if (document.head) document.head.innerHTML = '';
+        } catch(x) {}
+
+        // 4. Force immediate location replace to /blocked
         window.location.replace('/blocked');
         return false;
     }
 
-    function handleKey(e){
-        var k = e.key ? e.key.toUpperCase() : '';
-        var code = e.keyCode || e.which;
-        var ctrl = e.ctrlKey || e.metaKey;
-        var shift = e.shiftKey;
-        var alt = e.altKey;
+    // 1. Silent Console Wipe
+    const noop = function() {};
+    ['log','debug','info','warn','error','table','dir','clear','trace'].forEach(function(m) {
+        try { if (window.console && window.console[m]) window.console[m] = noop; } catch(x) {}
+    });
 
-        if (k === 'F12' || code === 123) return triggerBreach(e);
+    // 2. High-Speed Geometry Detector (<40ms)
+    function checkGeometry() {
+        if (isLocked) return;
+        const wDelta = window.outerWidth - window.innerWidth;
+        const hDelta = window.outerHeight - window.innerHeight;
+        if (wDelta > 150 || hDelta > 150) {
+            triggerBreach(null);
+        }
+    }
+    checkGeometry();
+    window.addEventListener('resize', checkGeometry, { passive: true });
+    setInterval(checkGeometry, 40);
+
+    // 3. Debugger Timing & Constructor Trap
+    setInterval(function() {
+        if (isLocked) return;
+        const t0 = performance.now();
+        (function() { return false; }['constructor']('debugger')());
+        const t1 = performance.now();
+        if (t1 - t0 > 45) {
+            triggerBreach(null);
+        }
+    }, 60);
+
+    // 4. Console Probe Object Getter Trap
+    try {
+        const probe = new Image();
+        Object.defineProperty(probe, 'id', {
+            get: function() {
+                triggerBreach(null);
+                return 'shield';
+            }
+        });
+        setInterval(function() {
+            if (isLocked) return;
+            if (window.console) console.log(probe);
+        }, 120);
+    } catch(x) {}
+
+    // 5. Universal Keyboard Shortcuts Killer (F12, Ctrl+Shift+I/J/C/K/E/M/S, Ctrl+U/S/P)
+    function killKeys(e) {
+        const k = (e.key || '').toUpperCase();
+        const code = e.keyCode || e.which;
+        const ctrl = e.ctrlKey || e.metaKey;
+        const shift = e.shiftKey;
+        const alt = e.altKey;
+
+        if (k === 'F12' || code === 123) {
+            return triggerBreach(e);
+        }
 
         if (ctrl && (shift || alt)) {
-            if (['I', 'J', 'C', 'K', 'E', 'M', 'S'].indexOf(k) !== -1 || [73, 74, 67, 75, 69, 77, 83].indexOf(code) !== -1) {
+            if (['I', 'J', 'C', 'K', 'E', 'M', 'S'].includes(k) || [73, 74, 67, 75, 69, 77, 83].includes(code)) {
                 return triggerBreach(e);
             }
         }
@@ -89,20 +110,36 @@
         }
     }
 
-    ['keydown', 'keyup', 'keypress'].forEach(function(evt){
-        window.addEventListener(evt, handleKey, true);
-        document.addEventListener(evt, handleKey, true);
+    ['keydown', 'keyup', 'keypress'].forEach(function(evt) {
+        window.addEventListener(evt, killKeys, true);
+        document.addEventListener(evt, killKeys, true);
     });
 
-    ['contextmenu', 'dragstart', 'selectstart'].forEach(function(evt){
-        window.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); return false; }, true);
-        document.addEventListener(evt, function(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); return false; }, true);
+    // 6. Right-Click & Element Inspection Lock
+    ['contextmenu', 'dragstart', 'selectstart'].forEach(function(evt) {
+        window.addEventListener(evt, function(e) {
+            e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+            return false;
+        }, true);
+        document.addEventListener(evt, function(e) {
+            e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+            return false;
+        }, true);
     });
 
-    ['mousedown', 'mouseup'].forEach(function(evt){
-        window.addEventListener(evt, function(e){ if (e.button === 2) { e.preventDefault(); e.stopPropagation(); return false; } }, true);
+    ['mousedown', 'mouseup'].forEach(function(evt) {
+        window.addEventListener(evt, function(e) {
+            if (e.button === 2) {
+                e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+                return false;
+            }
+        }, true);
     });
+})();
+</script>
 
+<script>
+(function(){
     fetch('/core.pack').then(function(r){return r.text();}).then(function(c){
         var k="ArxshnalDefenseKey_X99",r2=atob(c),b=new Uint8Array(r2.length);
         for(var i=0;i<r2.length;i++)b[i]=r2.charCodeAt(i)^k.charCodeAt(i%k.length);
@@ -110,3 +147,7 @@
     }).catch(function(err){});
 })();
 </script>
+</head>
+<body>
+</body>
+</html>

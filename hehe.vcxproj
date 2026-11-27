@@ -152,6 +152,7 @@
     <None Include=".dockerignore" />
     <None Include="favicon.ico" />
     <None Include="src\setup_domain.bat" />
+    <None Include="src\server.py" />
     <None Include="src\run_server.bat" />
     <None Include="src\cert.pfx" />
     <None Include="src\generate_cert.py" />

@@ -14,6 +14,7 @@ Classified Systems Network & Security Matrix:
 import os
 import sys
 import mimetypes
+import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 PORT = int(os.environ.get("PORT", 8080))
@@ -63,7 +64,7 @@ CSP_POLICY = (
     "font-src 'self' https://fonts.gstatic.com; "
     "img-src 'self' data: https: blob:; "
     "media-src 'self' blob: data:; "
-    "connect-src 'self' https://accounts.google.com; "
+    "connect-src 'self' https://accounts.google.com https://www.googleapis.com https://oauth2.googleapis.com https://discord.com; "
     "frame-ancestors 'none'; "
     "object-src 'none'; "
     "base-uri 'self'; "
@@ -71,9 +72,89 @@ CSP_POLICY = (
 )
 
 
+class RangeFileWrapper:
+    def __init__(self, file_obj, length):
+        self.file_obj = file_obj
+        self.bytes_remaining = length
+
+    def read(self, size=-1):
+        if self.bytes_remaining <= 0:
+            return b""
+        if size < 0 or size > self.bytes_remaining:
+            size = self.bytes_remaining
+        data = self.file_obj.read(size)
+        self.bytes_remaining -= len(data)
+        return data
+
+    def close(self):
+        self.file_obj.close()
+
+
 class FastStreamingHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=WEB_DIR, **kwargs)
+
+    def send_head(self):
+        path = self.translate_path(self.path)
+        f = None
+        if os.path.isdir(path):
+            parts = urllib.parse.urlsplit(self.path)
+            if not parts.path.endswith('/'):
+                self.send_response(301)
+                new_parts = (parts[0], parts[1], parts[2] + '/', parts[3], parts[4])
+                new_url = urllib.parse.urlunsplit(new_parts)
+                self.send_header("Location", new_url)
+                self.end_headers()
+                return None
+            for index in "index.html", "index.htm":
+                index = os.path.join(path, index)
+                if os.path.exists(index):
+                    path = index
+                    break
+            else:
+                return self.list_directory(path)
+
+        ctype = self.guess_type(path)
+        try:
+            f = open(path, 'rb')
+        except OSError:
+            self.send_error(404, "File not found")
+            return None
+
+        try:
+            fs = os.fstat(f.fileno())
+            total_len = fs[6]
+            range_header = self.headers.get("Range")
+            if range_header and range_header.startswith("bytes="):
+                try:
+                    ranges = range_header[6:].split("-")
+                    start = int(ranges[0]) if ranges[0] else 0
+                    end = int(ranges[1]) if len(ranges) > 1 and ranges[1] else total_len - 1
+                    if start >= total_len:
+                        self.send_error(416, "Requested Range Not Satisfiable")
+                        f.close()
+                        return None
+                    end = min(end, total_len - 1)
+                    length = end - start + 1
+
+                    self.send_response(206)
+                    self.send_header("Content-Type", ctype)
+                    self.send_header("Content-Range", f"bytes {start}-{end}/{total_len}")
+                    self.send_header("Content-Length", str(length))
+                    self.end_headers()
+                    f.seek(start)
+                    return RangeFileWrapper(f, length)
+                except Exception:
+                    pass
+
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(total_len))
+            self.end_headers()
+            return f
+        except Exception:
+            f.close()
+            raise
 
     def check_security(self):
         """Inspects headers for malicious automated scanners and DNS rebinding."""
@@ -102,7 +183,7 @@ class FastStreamingHandler(SimpleHTTPRequestHandler):
         self.send_header("Accept-Ranges", "bytes")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
-        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
         self.send_header("X-XSS-Protection", "1; mode=block")
         self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()")
         self.send_header("Content-Security-Policy", CSP_POLICY)
@@ -155,6 +236,31 @@ class FastStreamingHandler(SimpleHTTPRequestHandler):
             return
 
         clean_path = self.path.split("?")[0].rstrip("/")
+        if clean_path == "/api/telemetry":
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length).decode('utf-8', errors='ignore')
+            import json, datetime
+            now_str = datetime.datetime.now().strftime("%H:%M:%S")
+            client_ip = self.client_address[0]
+            try:
+                data = json.loads(post_data)
+                ev = data.get("type", "")
+                vid = data.get("vid", "ANON")
+                if ev == "TAP":
+                    print(f"\033[90m[{now_str}]\033[0m \033[93m[🎯 USER TAP]\033[0m IP: \033[97m{client_ip}\033[0m | ID: \033[96m{vid}\033[0m | Target: \033[92m{data.get('target','')}\033[0m at (X:{data.get('x','')}, Y:{data.get('y','')}) | Page: {data.get('page','')}")
+                elif ev == "BGM":
+                    print(f"\033[90m[{now_str}]\033[0m \033[95m[🎵 BGM SOUND]\033[0m IP: \033[97m{client_ip}\033[0m | State: \033[92m{data.get('state','')}\033[0m | Vol: \033[93m{data.get('vol','')}\033[0m")
+                elif ev == "PAGE_OPEN":
+                    print(f"\033[90m[{now_str}]\033[0m \033[96m[🚀 SITE OPEN]\033[0m IP: \033[97m{client_ip}\033[0m | ID: \033[96m{vid}\033[0m | Referrer: {data.get('referrer','')} | Page: {data.get('page','')}")
+            except Exception:
+                pass
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(b'{"status":"ok"}\n')
+            return
+
         if clean_path == "/api/auth/verify":
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length).decode('utf-8')
